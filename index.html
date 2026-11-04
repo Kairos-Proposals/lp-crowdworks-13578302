@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kairos ご提案 | Drupal → WordPress サイト移行</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Zen+Kaku+Gothic+New:wght@500;700;900&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#0B2D4E;
+    --navy-deep:#081F38;
+    --blue-line:#5E8FBF;
+    --paper:#F3EFE4;
+    --ink:#1A1A2E;
+    --signal:#E2762F;
+    --mist:#DCE6EE;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    font-family:'Noto Sans JP',sans-serif;
+    color:var(--ink);
+    background:var(--paper);
+    line-height:1.85;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3,.label-font{
+    font-family:'Space Grotesk','Zen Kaku Gothic New',sans-serif;
+  }
+  .jp-heading{
+    font-family:'Zen Kaku Gothic New','Space Grotesk',sans-serif;
+  }
+  a{color:inherit;}
+  img{max-width:100%;display:block;}
+  .wrap{
+    max-width:1080px;
+    margin:0 auto;
+    padding:0 28px;
+  }
+
+  /* ===== 共通：ブループリント罫線飾り ===== */
+  .blueprint-corner{
+    position:absolute;
+    width:22px;height:22px;
+    border:2px solid var(--blue-line);
+    opacity:.6;
+  }
+  .corner-tl{top:18px;left:18px;border-right:none;border-bottom:none;}
+  .corner-tr{top:18px;right:18px;border-left:none;border-bottom:none;}
+  .corner-bl{bottom:18px;left:18px;border-right:none;border-top:none;}
+  .corner-br{bottom:18px;right:18px;border-left:none;border-top:none;}
+
+  /* ===== HERO ===== */
+  .hero{
+    position:relative;
+    background:
+      repeating-linear-gradient(0deg, rgba(94,143,191,.18) 0px, rgba(94,143,191,.18) 1px, transparent 1px, transparent 48px),
+      repeating-linear-gradient(90deg, rgba(94,143,191,.18) 0px, rgba(94,143,191,.18) 1px, transparent 1px, transparent 48px),
+      linear-gradient(160deg, var(--navy-deep), var(--navy) 60%, #103356);
+    color:#EAF1F8;
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    overflow:hidden;
+    padding:120px 0 80px;
+  }
+  .hero::before{
+    content:"";
+    position:absolute;
+    top:50%;left:50%;
+    transform:translate(-50%,-50%);
+    width:640px;height:640px;
+    border:1.5px dashed rgba(224,236,247,.18);
+    border-radius:50%;
+  }
+  .hero::after{
+    content:"";
+    position:absolute;
+    top:50%;left:50%;
+    transform:translate(-50%,-50%);
+    width:420px;height:420px;
+    border:1px solid rgba(224,236,247,.12);
+    border-radius:50%;
+  }
+  .hero-inner{position:relative;z-index:2;}
+  .kicker{
+    display:inline-flex;
+    align-items:center;
+    gap:10px;
+    font-family:'Space Grotesk',sans-serif;
+    font-size:.78rem;
+    letter-spacing:.18em;
+    color:var(--signal);
+    border:1px solid rgba(226,118,47,.5);
+    padding:7px 16px;
+    border-radius:999px;
+    margin-bottom:34px;
+  }
+  .kicker::before{
+    content:"";
+    width:7px;height:7px;
+    background:var(--signal);
+    border-radius:50%;
+    display:inline-block;
+  }
+  .hero h1{
+    font-size:clamp(2.1rem, 5.2vw, 3.6rem);
+    font-weight:700;
+    line-height:1.45;
+    letter-spacing:.01em;
+    max-width:860px;
+    margin-bottom:28px;
+  }
+  .hero h1 em{
+    font-style:normal;
+    color:var(--signal);
+    border-bottom:2px solid rgba(226,118,47,.5);
+  }
+  .hero p.lead{
+    font-size:1.02rem;
+    color:#C7D7E6;
+    max-width:620px;
+    margin-bottom:46px;
+  }
+  .hero-meta{
+    display:flex;
+    flex-wrap:wrap;
+    gap:14px 34px;
+    font-family:'Space Grotesk',sans-serif;
+    font-size:.82rem;
+    color:#9FB7CC;
+    border-top:1px solid rgba(197,214,230,.25);
+    padding-top:22px;
+    max-width:760px;
+  }
+  .hero-meta span b{
+    display:block;
+    color:#EAF1F8;
+    font-size:.95rem;
+    font-weight:500;
+    margin-top:2px;
+  }
+
+  /* ===== SECTION 共通 ===== */
+  section{padding:96px 0;}
+  .section-head{
+    margin-bottom:56px;
+  }
+  .section-tag{
+    font-family:'Space Grotesk',sans-serif;
+    font-size:.78rem;
+    letter-spacing:.2em;
+    color:var(--blue-line);
+    display:block;
+    margin-bottom:14px;
+  }
+  .section-head h2{
+    font-size:clamp(1.5rem,3.4vw,2.2rem);
+    font-weight:700;
+    color:var(--navy);
+    line-height:1.6;
+  }
+
+  /* ===== 理解セクション ===== */
+  .understand{
+    background:var(--mist);
+    position:relative;
+  }
+  .understand .blueprint-corner{border-color:var(--navy);opacity:.35;}
+  .understand-grid{
+    display:grid;
+    grid-template-columns:1.1fr .9fr;
+    gap:56px;
+    align-items:start;
+  }
+  .understand-text p{
+    margin-bottom:18px;
+    font-size:.98rem;
+  }
+  .understand-points{
+    background:#fff;
+    border:1px solid #C9D7E2;
+    border-radius:4px;
+    padding:30px 28px;
+  }
+  .understand-points li{
+    list-style:none;
+    padding:14px 0;
+    border-bottom:1px dashed #C9D7E2;
+    font-size:.92rem;
+    display:flex;
+    gap:12px;
+  }
+  .understand-points li:last-child{border-bottom:none;}
+  .understand-points li::before{
+    content:"→";
+    color:var(--signal);
+    font-weight:700;
+    flex-shrink:0;
+  }
+
+  /* ===== VALUE CARDS ===== */
+  .value{position:relative;}
+  .value-grid{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:24px;
+  }
+  .value-card{
+    background:#fff;
+    border:1px solid #E1DCC9;
+    border-top:4px solid var(--navy);
+    padding:32px 26px 28px;
+    position:relative;
+    transition:transform .25s ease, box-shadow .25s ease, border-color .25s ease;
+  }
+  .value-card:hover{
+    transform:translateY(-6px);
+    box-shadow:0 18px 34px -16px rgba(11,45,78,.35);
+    border-top-color:var(--signal);
+  }
+  .value-num{
+    font-family:'Space Grotesk',sans-serif;
+    font-size:.75rem;
+    color:var(--blue-line);
+    letter-spacing:.14em;
+    margin-bottom:16px;
+    display:block;
+  }
+  .value-card h3{
+    font-size:1.08rem;
+    color:var(--navy);
+    margin-bottom:12px;
+    font-weight:700;
+    line-height:1.5;
+  }
+  .value-card p{
+    font-size:.88rem;
+    color:#4A4A58;
+  }
+  .value-card.wide{grid-column:span 1;}
+
+  /* ===== SCHEDULE ===== */
+  .schedule{
+    background:var(--navy-deep);
+    color:#EAF1F8;
+    position:relative;
+    overflow:hidden;
+  }
+  .schedule::before{
+    content:"";
+    position:absolute;
+    inset:0;
+    background:repeating-linear-gradient(0deg, rgba(94,143,191,.08) 0 1px, transparent 1px 42px),
+               repeating-linear-gradient(90deg, rgba(94,143,191,.08) 0 1px, transparent 1px 42px);
+    pointer-events:none;
+  }
+  .schedule .section-tag{color:#8FB1D1;}
+  .schedule .section-head h2{color:#EAF1F8;}
+  .timeline{
+    position:relative;
+    z-index:2;
+    display:flex;
+    flex-direction:column;
+    gap:0;
+  }
+  .step{
+    display:grid;
+    grid-template-columns:90px 1fr;
+    gap:26px;
+    padding:26px 0;
+    border-bottom:1px solid rgba(197,214,230,.18);
+    align-items:start;
+  }
+  .step:last-child{border-bottom:none;}
+  .step-num{
+    font-family:'Space Grotesk',sans-serif;
+    font-size:2rem;
+    font-weight:700;
+    color:transparent;
+    -webkit-text-stroke:1.3px var(--signal);
+  }
+  .step-body h3{
+    font-size:1.05rem;
+    margin-bottom:6px;
+    color:#fff;
+    font-weight:700;
+  }
+  .step-body p{
+    font-size:.88rem;
+    color:#B9CBDC;
+    margin-bottom:6px;
+  }
+  .step-dur{
+    display:inline-block;
+    font-family:'Space Grotesk',sans-serif;
+    font-size:.74rem;
+    letter-spacing:.08em;
+    color:var(--signal);
+    border:1px solid rgba(226,118,47,.45);
+    padding:3px 11px;
+    border-radius:999px;
+  }
+  .schedule-note{
+    margin-top:36px;
+    font-size:.85rem;
+    color:#9FB7CC;
+    border-left:3px solid var(--signal);
+    padding-left:16px;
+    position:relative;
+    z-index:2;
+  }
+
+  /* ===== CLOSING ===== */
+  .closing{
+    background:linear-gradient(135deg, var(--signal), #C2581C);
+    color:#fff;
+    text-align:center;
+    position:relative;
+    overflow:hidden;
+  }
+  .closing::before{
+    content:"BLUEPRINT TO PRODUCTION";
+    position:absolute;
+    top:-10px;left:50%;
+    transform:translateX(-50%);
+    font-family:'Space Grotesk',sans-serif;
+    font-size:9rem;
+    font-weight:700;
+    color:rgba(255,255,255,.06);
+    white-space:nowrap;
+    letter-spacing:.05em;
+    pointer-events:none;
+  }
+  .closing-inner{position:relative;z-index:2;}
+  .closing h2{
+    font-size:clamp(1.6rem,4vw,2.4rem);
+    font-weight:700;
+    margin-bottom:20px;
+    line-height:1.6;
+  }
+  .closing p{
+    max-width:560px;
+    margin:0 auto 38px;
+    font-size:.98rem;
+    opacity:.95;
+  }
+  .cta-btn{
+    display:inline-flex;
+    align-items:center;
+    gap:10px;
+    background:var(--navy-deep);
+    color:#fff;
+    padding:18px 42px;
+    border-radius:4px;
+    font-weight:700;
+    font-size:1rem;
+    text-decoration:none;
+    letter-spacing:.03em;
+    border:1px solid rgba(255,255,255,.2);
+    transition:transform .2s ease, background .2s ease;
+  }
+  .cta-btn:hover{
+    transform:translateY(-3px);
+    background:#061728;
+  }
+  .closing-foot{
+    margin-top:46px;
+    font-size:.8rem;
+    opacity:.85;
+    font-family:'Space Grotesk',sans-serif;
+    letter-spacing:.04em;
+  }
+
+  footer{
+    background:var(--navy-deep);
+    color:#7F98AE;
+    text-align:center;
+    padding:26px 0;
+    font-size:.78rem;
+    font-family:'Space Grotesk',sans-serif;
+    letter-spacing:.05em;
+  }
+
+  /* ===== RESPONSIVE ===== */
+  @media (max-width:860px){
+    .understand-grid{grid-template-columns:1fr;}
+    .value-grid{grid-template-columns:repeat(2,1fr);}
+  }
+  @media (max-width:600px){
+    .hero{padding:100px 0 60px;min-height:auto;}
+    section{padding:70px 0;}
+    .value-grid{grid-template-columns:1fr;}
+    .step{grid-template-columns:56px 1fr;gap:16px;}
+    .step-num{font-size:1.4rem;}
+    .hero-meta{gap:16px 24px;}
+    .closing::before{font-size:4rem;}
+  }
+</style>
+</head>
+<body>
+
+<!-- ===== HERO ===== -->
+<section class="hero">
+  <span class="blueprint-corner corner-tl"></span>
+  <span class="blueprint-corner corner-tr"></span>
+  <span class="blueprint-corner corner-bl"></span>
+  <span class="blueprint-corner corner-br"></span>
+  <div class="wrap hero-inner">
+    <div class="kicker">KAIROS PROPOSAL — for sobigface_ysatos 様</div>
+    <h1>サイトの引っ越しは、<br>見た目を<em>壊さず</em>、土台だけを架け替える。</h1>
+    <p class="lead">
+      DrupalサイトのWordPress移行、Kairosよりご提案いたします。
+      現行デザインの再現、Contact Form 7によるお問い合わせフォームの再構築、
+      そして移行に伴うリスクの洗い出しまで、設計図を描くように丁寧に進めます。
+    </p>
+    <div class="hero-meta">
+      <span>CATEGORY<b>Webサイト移行・CMS構築</b></span>
+      <span>CURRENT SYSTEM<b>Drupal</b></span>
+      <span>DESTINATION<b>WordPress + Contact Form 7</b></span>
+      <span>BUDGET<b>ご要件を伺い、お見積りいたします</b></span>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 理解セクション ===== -->
+<section class="understand">
+  <span class="blueprint-corner corner-tl"></span>
+  <span class="blueprint-corner corner-br"></span>
+  <div class="wrap">
+    <div class="section-head">
+      <span class="section-tag">01 / UNDERSTANDING</span>
+      <h2 class="jp-heading">運用中のサイトだからこそ、大事なのは<br>「止めないこと」と「変えないこと」</h2>
+    </div>
+    <div class="understand-grid">
+      <div class="understand-text">
+        <p>
+          今回ご相談いただいたのは、長く運用してこられたDrupalサイトのWordPressへの移行です。
+          単なるシステムの入れ替えではなく、これまで積み上げてきたデザインや情報構造という「資産」を
+          壊さずに引き継ぐことが、何より重要だと私たちは理解しています。
+        </p>
+        <p>
+          見た目が大きく変わってしまうと、訪問者や取引先に違和感を与えかねません。
+          また、問い合わせフォームが止まってしまうことは、ビジネス上の機会損失に直結します。
+          Kairosでは、この「変えてはいけない部分」と「変えるべき部分」を明確に切り分けたうえで、
+          移行プロジェクトを設計いたします。
+        </p>
+        <p>
+          さらに、Drupal特有の機能やモジュールに依存している箇所がないか、
+          移行後にSEO評価やURL構造へ影響が出ないかといった、
+          発注者様が見落としがちなリスクについても、事前にご説明したうえで進めます。
+        </p>
+      </div>
+      <ul class="understand-points">
+        <li>現行デザインの見た目を可能な限りそのまま再現</li>
+        <li>お問い合わせフォームはContact Form 7で機能・項目を再構築</li>
+        <li>移行時のURL・SEO・リンク切れリスクを事前に整理</li>
+        <li>セキュリティ・保守の観点から必要なプラグインをご提案</li>
+        <li>公開後も安心して運用いただける体制づくり</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ===== VALUE ===== -->
+<section class="value">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="section-tag">02 / WHAT WE PROVIDE</span>
+      <h2 class="jp-heading">Kairosがご提供できること</h2>
+    </div>
+    <div class="value-grid">
+      <div class="value-card">
+        <span class="value-num">01 — DESIGN</span>
+        <h3>現行デザインの忠実な再現</h3>
+        <p>現行Drupalサイトのレイアウト・配色・コーディングを解析し、WordPressテーマとして忠実に再構築します。訪問者が違和感を覚えない、滑らかな移行を実現します。</p>
+      </div>
+      <div class="value-card">
+        <span class="value-num">02 — FORM</span>
+        <h3>Contact Form 7によるフォーム再構築</h3>
+        <p>現在の入力項目・バリデーション・自動返信メールの内容を踏まえ、Contact Form 7で同等機能を再現。あわせてスパム対策（reCAPTCHA等）もご用意します。</p>
+      </div>
+      <div class="value-card">
+        <span class="value-num">03 — RISK</span>
+        <h3>移行時の留意点の整理・ご報告</h3>
+        <p>URL構造の変化によるSEO影響、301リダイレクト設計、画像・PDF等メディアの移行方法、Drupal独自モジュールの代替手段などをドキュメントにまとめてご説明します。</p>
+      </div>
+      <div class="value-card">
+        <span class="value-num">04 — PLUGIN</span>
+        <h3>最適なプラグインの選定・導入</h3>
+        <p>セキュリティ（ログイン制限・改ざん検知）、バックアップ、キャッシュ、SEOなど、サイトの規模と用途に合わせて必要最小限のプラグイン構成をご提案・導入します。</p>
+      </div>
+      <div class="value-card">
+        <span class="value-num">05 — SUPPORT</span>
+        <h3>公開後の安心サポート</h3>
+        <p>公開直後の表示崩れやリンク切れのチェックを行い、一定期間は不具合対応も承ります。移行後の運用方法についてもレクチャーいたします。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== SCHEDULE ===== -->
+<section class="schedule">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="section-tag">03 / HOW WE WORK</span>
+      <h2 class="jp-heading">進め方 — 設計図から竣工まで</h2>
+    </div>
+    <div class="timeline">
+      <div class="step">
+        <div class="step-num">01</div>
+        <div class="step-body">
+          <h3>設計図作成（要件定義・現状調査）</h3>
+          <p>現行Drupalサイトの構造・ページ数・モジュール利用状況を調査し、移行範囲と仕様を確定します。</p>
+          <span class="step-dur">約1週間</span>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">02</div>
+        <div class="step-body">
+          <h3>基礎工事（環境構築・WordPress初期設定）</h3>
+          <p>WordPress本体のセットアップ、サーバー・ドメイン周りの環境整備、必要プラグインの選定を行います。</p>
+          <span class="step-dur">約3日</span>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">03</div>
+        <div class="step-body">
+          <h3>躯体工事（コンテンツ・データ移行）</h3>
+          <p>既存ページ・記事・画像などのコンテンツを移行し、情報構造を再現します。</p>
+          <span class="step-dur">約1〜2週間</span>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">04</div>
+        <div class="step-body">
+          <h3>内装仕上げ（デザイン再現・フォーム実装）</h3>
+          <p>現行デザインをテーマとして実装し、Contact Form 7によるお問い合わせフォームを構築・テストします。</p>
+          <span class="step-dur">約1週間</span>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">05</div>
+        <div class="step-body">
+          <h3>竣工・引き渡し（最終チェック・公開）</h3>
+          <p>表示崩れ・リンク切れ・フォーム動作の最終確認を行い、公開。運用マニュアルとあわせて納品します。</p>
+          <span class="step-dur">約3日</span>
+        </div>
+      </div>
+    </div>
+    <p class="schedule-note">
+      全体の目安期間は約1ヶ月です。サイトの規模や既存コンテンツ量に応じて前後いたします。
+      予算につきましても、現行サイトを拝見したうえで具体的なお見積りをご提示いたします。
+    </p>
+  </div>
+</section>
+
+<!-- ===== CLOSING ===== -->
+<section class="closing">
+  <div class="wrap closing-inner">
+    <h2>まずは、現行サイトを<br>拝見させてください。</h2>
+    <p>
+      どんな機能が使われていて、どこを残し、どこを整理すべきか——
+      設計図を描くところから、Kairosがご一緒します。
+      お気軽にご相談ください。
+    </p>
+    <a href="#" class="cta-btn">無料相談・お見積りのご依頼 →</a>
+    <div class="closing-foot">KAIROS — Web制作・システム開発チーム</div>
+  </div>
+</section>
+
+<footer>
+  © Kairos / Web制作・システム開発チーム — Proposal for "Drupalサイトのワードプレス移行"
+</footer>
+
+</body>
+</html>
